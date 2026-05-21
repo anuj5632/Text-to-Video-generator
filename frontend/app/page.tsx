@@ -9,8 +9,6 @@ import { Sparkles } from "lucide-react"
 
 type AppState = "idle" | "generating" | "success" | "error"
 
-const API_BASE = "http://127.0.0.1:8000"
-
 interface ProgressData {
   progress: number
   stage: string
@@ -35,7 +33,7 @@ export default function Home() {
       setProgressData({ progress: 0, stage: "START", message: "Starting..." })
 
       // 1️⃣ Start video generation
-      const response = await fetch(`${API_BASE}/generate`, {
+      const response = await fetch(`/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -62,7 +60,7 @@ export default function Home() {
 
     const poll = setInterval(async () => {
       try {
-        const response = await fetch(`${API_BASE}/status/${id}`)
+        const response = await fetch(`/api/status/${id}`)
 
         if (!response.ok) {
           throw new Error("Failed to fetch job status")

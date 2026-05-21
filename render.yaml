@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: text2video-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: CORS_ORIGINS
+        fromService:
+          name: text2video-frontend
+          type: web
+          property: url
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: backend-outputs
+      mountPath: /app/outputs
+      sizeGB: 10
+
+  - type: web
+    name: text2video-frontend
+    env: docker
+    dockerfilePath: frontend/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: BACKEND_API_URL
+        fromService:
+          name: text2video-backend
+          type: web
+          property: url

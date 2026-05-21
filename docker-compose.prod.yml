@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: text2video-backend
+    restart: unless-stopped
+    environment:
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_outputs:/app/outputs
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: text2video-frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_API_URL: ${BACKEND_API_URL}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  backend_outputs:
